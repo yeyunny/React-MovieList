@@ -2,18 +2,18 @@ import { useState, useEffect } from "react";
 
 function Hello() {
   //방법1 - 추천
-  useEffect(function () {
-    console.log("hi :)");
-    return function () {
-      console.log("bye :(");
-    };
-  }, []);
-
-  //방법2
-  // useEffect(() => {
+  // useEffect(function () {
   //   console.log("hi :)");
-  //   return () => console.log("bye :(");
+  //   return function () {
+  //     console.log("bye :(");
+  //   };
   // }, []);
+
+  //방법2 - 추천
+  useEffect(() => {
+    console.log("hi :)");
+    return () => console.log("bye :(");
+  }, []);
 
   return <h1>Hello</h1>;
 }
