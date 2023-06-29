@@ -2,54 +2,40 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [coins, setCoins] = useState([]);
-  const [money, setMoney] = useState();
-  const arr = [];
+  const [movies, setMovies] = useState([]);
+  const getMovies = async () => {
+    const json = await (
+      await fetch(
+        `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
+      )
+    ).json();
 
-  const moneyHandler = (event) => {
-    setMoney(event.target.value);
-    console.log(event.target.value);
-  };
-
-  const moneyToCoin = () => {
-    coins.map((coin) => {
-      const coinValue = coin.quotes.USD.price;
-      arr.push(coinValue / money);
-    });
+    setMovies(json.data.movies);
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetch("https://api.coinpaprika.com/v1/tickers")
-      .then((response) => response.json())
-      .then((json) => {
-        setCoins(json);
-        setLoading(false);
-      });
+    getMovies();
   }, []);
-
+  console.log(movies);
   return (
     <div>
-      <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
-
       {loading ? (
-        <strong>Loading...</strong>
+        <h1>Loading</h1>
       ) : (
         <div>
-          <input
-            value={money}
-            onChange={moneyHandler}
-            type="number"
-            placeholder="how much"
-          ></input>
-          <button onClick={moneyToCoin}>enter</button>
-          <select>
-            {coins.map((coin) => (
-              <option>
-                {coin.name} ({coin.symbol}): ${coin.quotes.USD.price} USD
-              </option>
-            ))}
-          </select>
-          <h2>sdf</h2>
+          {movies.map((movie) => (
+            <div key={movie.id}>
+              <img src={movie.medium_cover_image} />
+              <h2>{movie.title}</h2>
+              <p>{movie.summary}</p>
+              <ul>
+                {movie.genres.map((g) => (
+                  <li key={g}>{g}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       )}
     </div>
